@@ -1,0 +1,4 @@
+# Copyright 2019 Quirino Gervacio. All Rights Reserved.
+
+.vagrant
+*.log
