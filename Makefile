@@ -11,19 +11,19 @@ help:
 TST = $(shell date "+D%Y%m%dT%H%M%S%Z" | sed -e "s/+/Z/g")
 LOG = out-${TST}.log
 
-s: ssh
-ssh: ## (sw) SSH to VM. (ex. s n=master0)
-	-vagrant ssh $(n)
-
-vl: vlist
-vlist: ## (vl) List VB running VMs
-	-vboxmanage list runningvms
-
 d: destroy
 destroy: ## (d)  Destroy VMs with force
 	-vagrant destroy -f
 	-rm -rf *.log
 
+s: ssh
+ssh: ## (s)  SSH to VM. (ex. s n=master0)
+	-vagrant ssh $(n)
+
 u: up
 up: ## (u)  Start the environment
 	-vagrant up 2>&1 | tee ${LOG}
+
+vl: vlist
+vlist: ## (vl) List VB running VMs
+	-vboxmanage list runningvms
