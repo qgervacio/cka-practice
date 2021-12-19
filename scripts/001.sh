@@ -1,23 +1,31 @@
 #!/bin/sh
 set -x # echo all commands
 
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+
 echo "Disable swap..."
-swapoff -a
+sudo swapoff -a
 
-echo "Add google repo gpg key..."
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "Verify MAC address are unique..."
+ip link
 
-echo "Add kube apt repos..."
-sudo bash -c 'cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb https://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-'
+echo "Make sure that the br_netfilter module is loaded..."
+sudo modprobe br_netfilter
+lsmod | grep br_netfilter
 
-echo "Update and install docker and kube..."
+echo "Update the apt package index and install packages needed to use the Kubernetes apt repository..."
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl
+
+echo "Download the Google Cloud public signing key..."
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+echo "Add the Kubernetes apt repository..."
+echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+echo "Update apt package index, install docker kubelet, kubeadm and kubectl, and pin their version..."
 sudo apt-get update
 sudo apt-get install -y docker.io kubelet kubeadm kubectl
-
-echo "Hold to prevent update..."
 sudo apt-mark hold docker.io kubelet kubeadm kubectl
 
 echo "Start service..."
