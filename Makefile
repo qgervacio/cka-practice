@@ -15,19 +15,28 @@ LOG = out-${TST}.log
 
 ##@ Build
 
-d: destroy
-destroy: ## (d)  Destroy VMs with force
+
+c: create
+create: ## (c) Create VMs
+	@vagrant up 2>&1 | tee ${LOG}
+
+s: ssh
+ssh: ## (s) SSH to VM. (ex. s n=master0)
+	@vagrant ssh $(n)
+
+x: destroy
+destroy: ## (x) Destroy VMs with force
 	@vagrant destroy -f
 	@rm -rf *.log
 
-s: ssh
-ssh: ## (s)  SSH to VM. (ex. s n=master0)
-	@vagrant ssh $(n)
-
 u: up
-up: ## (u)  Start the environment
-	@vagrant up 2>&1 | tee ${LOG}
+up: ## (u) Resume Vms
+	@vagrant resume
 
-vl: vlist
-vlist: ## (vl) List VB running VMs
+d: down
+down: ## (d) Suspend Vms
+	@vagrant suspend
+
+l: list
+list: ## (l) List VB running VMs
 	@vboxmanage list runningvms
