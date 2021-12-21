@@ -30,3 +30,6 @@ alias kc="kubectl config set-context"
 make help
 ```
 
+## Reference
+
+* [Running Highly Available Clusters with Kubeadm](https://www.weave.works/blog/running-highly-available-clusters-with-kubeadm)
